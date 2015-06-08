@@ -1,0 +1,33 @@
+{
+  "name": "jqeury.ajaxq",
+  "version": "0.5.0",
+  "homepage": "https://github.com/shults/jquery.ajaxq",
+  "authors": [
+    "Yaroslav Kotsur <yarikkotsur@gmail.com>"
+  ],
+  "description": "Simple jQuery plugin for manipulation of AJAX queues",
+  "main": "build/jquery.ajaxq.js",
+  "keywords": [
+    "jquery",
+    "ajax",
+    "queue",
+    "zepto",
+    "jqXHR"
+  ],
+  "devDependencies": {
+    "jquery": "~1.11.3",
+    "mocha": "~2.2.0",
+    "chai": "~2.3.0",
+    "sinon": "~1.14.1",
+    "sinon-chai": "~2.7.0",
+    "chai-jq": "~0.0.8"
+  },
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

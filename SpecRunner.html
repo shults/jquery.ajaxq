@@ -1,0 +1,69 @@
+<!doctype html>
+<html>
+  <head>
+    <title>jQuery.ajaxq SpecRunner</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <link rel="stylesheet" href="bower_components/mocha/mocha.css" />
+
+    <script src="bower_components/jquery/dist/jquery.js"></script>
+
+    <script src="bower_components/mocha/mocha.js"></script>
+    <script src="bower_components/chai/chai.js"></script>
+    <script src="bower_components/sinon/pkg/sinon.js"></script>
+    <script src="bower_components/sinon-chai/lib/sinon-chai.js"></script>
+    <script src="bower_components/chai-jq/chai-jq.js"></script>
+
+    <script>
+      mocha.setup('bdd');
+
+      window.expect = chai.expect;
+      window.sinon = sinon;
+
+      onload = function() {
+        mocha.checkLeaks();
+        mocha.run();
+
+        var $fixtures = $('#fixtures');
+
+        var setFixtures = function () {
+            _.each(arguments, function (content) {
+                $fixtures.append(content);
+            });
+        };
+
+        var clearFixtures = function () {
+            $fixtures.empty();
+        };
+
+        var originalHash = window.location.hash;
+
+        before(function() {
+            this.setFixtures = setFixtures;
+            this.clearFixtures = clearFixtures;
+        });
+
+        beforeEach(function () {
+            this.sinon = sinon.sandbox.create();
+        });
+
+        afterEach(function () {
+            this.sinon.restore();
+            this.clearFixtures();
+            window.location.hash = originalHash;
+        });
+      };
+    </script>
+
+    <script type="text/javascript" src="src/functions.js"></script>
+    <script type="text/javascript" src="src/Request.js"></script>
+
+    <script type="text/javascript" src="test/functionsSpec.js"></script>
+    <script type="text/javascript" src="test/RequestSpec.js"></script>
+  </head>
+  <body>
+    <div id="mocha"></div>
+    <div id="fixtures" hidden></div>
+  </body>
+</html>
