@@ -11,13 +11,14 @@ module.exports = function(grunt) {
     },
 
     clean: {
-      build: 'build',
-      tmp: 'tmp'
+      build: 'build'
     },
 
     uglify: {
-      src: 'build/<%= pkg.name %>.js',
-      dest: 'build/<%= pkg.name %>.min.js'
+      main: {
+        src: 'build/<%= pkg.name %>.js',
+        dest: 'build/<%= pkg.name %>.min.js'
+      }
     },
 
     watch: {
@@ -34,6 +35,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-watch');
 
   grunt.registerTask('dev', ['preprocess', 'watch']);
-  grunt.registerTask('build', ['clean:build', 'preprocess', 'uglify', 'clean:tmp']);
+  grunt.registerTask('build', ['clean:build', 'preprocess', 'uglify']);
   grunt.registerTask('default', ['build']);
 };
