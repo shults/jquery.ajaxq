@@ -32,6 +32,10 @@ var Request = (function (argument) {
       this._jqXHR.fail(function() {
         deferred.reject.apply(deferred, arguments);
       });
+
+      if (this._aborted) {
+        this._jqXHR.abort(this.statusText);
+      }
       
       // apply buffered calls 
       for (methodName in this._calls) {
