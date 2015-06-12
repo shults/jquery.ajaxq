@@ -48,6 +48,10 @@
         this._jqXHR.fail(function() {
           deferred.reject.apply(deferred, arguments);
         });
+  
+        if (this._aborted) {
+          this._jqXHR.abort(this.statusText);
+        }
         
         // apply buffered calls 
         for (methodName in this._calls) {
@@ -141,17 +145,62 @@
   var Queue = (function() {
   
     function Queue(bandwidth) {
+      if (typeof bandwidth !== 'undefined' && !$.isNumeric(bandwidth)) throw "number expected";
+  
       this._bandwidth = parseInt(bandwidth || 1, 10);
       if (this._bandwidth < 1) throw "Bandwidth can\'t be less then 1";
+      this._requests = [];
     };
   
     $.extend(Queue.prototype, {
-      add: function() {
-        
+      add: function(url, settings) {
+        var request = new Request(url, settings);
+  
+        if (this._requests.length < this._bandwidth) {
+          request.run();
+        } else {
+  
+          $.each(this._requests, function(i, _request) {
+            _request.always( request.run.bind(request) );
+          });
+  
+          this._requests.shift();
+        }
+  
+        this._requests.push(request);
+  
+        return request;
       }
     });
   
     return Queue;
   })();
+  if (typeof $.ajaxq !== 'undefined') throw "Namespace $.ajaxq is Alread y busy.";
+  
+  var _queue = new Queue();
+  
+  $.ajaxq = function(url, settions) {
+    return _queue.add.apply(_queue, arguments);
+  };
+  
+  $.ajaxq.get = function() {
+    throw "$.ajaxq.get is not implemented yet";
+  };
+  
+  $.ajaxq.post = function() {
+    throw "$.ajaxq.post is not implemented yet";
+  };
+  
+  $.ajaxq.getJSON = function() {
+    throw "$.ajaxq.getJSON is not implemented yet";
+  };
+  
+  $.ajaxq.Queue = function(bandwidth) {
+    return new Queue(bandwidth);
+  };
+  
+  $.ajaxq.Request = function(url, settings) {
+    return new Request(url, settings);
+  }
 
 })(this);

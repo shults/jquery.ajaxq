@@ -8,5 +8,6 @@
   // @include ../functions.js
   // @include ../Request.js
   // @include ../Queue.js
+  // @include ../ajaxq.js
 
 })(this);

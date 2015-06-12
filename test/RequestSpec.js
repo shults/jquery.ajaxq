@@ -103,6 +103,25 @@ describe('Request', function () {
       it('sets "_aborted" propery to true', function() {
         expect(request._aborted).to.be.true;
       });
+
+      it('calls #fail on aborts', function (done) {
+        var 
+          doneSpy = sinon.spy(),
+          failSpy = sinon.spy();
+
+        request
+          .done(doneSpy)
+          .fail(failSpy)
+          .always(function() {
+            expect(doneSpy.called).to.be.false;
+            expect(failSpy.calledOnce).to.be.true;
+            done();
+          });
+          
+        request.run();
+        
+        server.respond();
+      });
       
     });
 
@@ -136,6 +155,24 @@ describe('Request', function () {
           done();
         });
 
+      });
+
+      it('calls #fail on aborts', function (done) {
+        var 
+          doneSpy = sinon.spy(),
+          failSpy = sinon.spy();
+
+        request
+          .done(doneSpy)
+          .fail(failSpy)
+          .always(function() {
+            expect(doneSpy.called).to.be.false;
+            expect(failSpy.calledOnce).to.be.true;
+            done();
+          });
+        request.abort();
+        
+        server.respond();
       });
       
     });
