@@ -9,7 +9,7 @@ var Queue = (function() {
   };
 
   $.extend(Queue.prototype, {
-    add: function(url, settings) {
+    ajax: function(url, settings) {
       var request = new Request(url, settings);
 
       if (this._requests.length < this._bandwidth) {

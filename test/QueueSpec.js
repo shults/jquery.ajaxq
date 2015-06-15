@@ -66,9 +66,9 @@ describe('Queue', function () {
 
   });
 
-  describe('#add', function() {
+  describe('#ajax', function() {
     it('returns Request instance object', function() {
-      expect(queue.add('/')).to.be.an.instanceof(Request);
+      expect(queue.ajax('/')).to.be.an.instanceof(Request);
       server.respond();
     });
   });
@@ -109,27 +109,27 @@ describe('Queue', function () {
         done();
       }),
 
-      req1 = queue.add('/')
+      req1 = queue.ajax('/')
                     .done(r1Done)
                     .fail(r1Fail)
                     .always(r1Always),
 
-      req2 = queue.add('/done')
+      req2 = queue.ajax('/done')
                     .done(r2Done)
                     .fail(r2Fail)
                     .always(r2Always),
 
-      req3 = queue.add('/')
+      req3 = queue.ajax('/')
                     .done(r3Done)
                     .fail(r3Fail)
                     .always(r3Always),
 
-      req4 = queue.add('/fail')
+      req4 = queue.ajax('/fail')
                     .fail(r4Fail)
                     .done(r4Done)
                     .always(r4Always),
 
-      req5 = queue.add('/done')
+      req5 = queue.ajax('/done')
                     .done(r5Done)
                     .fail(r5Fail)
                     .always(r5Always);
@@ -259,13 +259,13 @@ describe('Queue', function () {
     it('applies run only two times', function() {
 
         expect(runSpy.called).to.be.false;
-        queue.add('/');
+        queue.ajax('/');
 
         expect(runSpy.calledOnce).to.be.true;
-        queue.add('/');
+        queue.ajax('/');
 
         expect(runSpy.calledTwice).to.be.true;
-        queue.add('/');
+        queue.ajax('/');
 
         expect(runSpy.calledTwice).to.be.true;
         expect(runSpy.calledThrice).to.be.false;
@@ -274,13 +274,13 @@ describe('Queue', function () {
     it('applies run three times if got response on first or second', function(done) {
       var req1, req2, req3;
 
-      req1 = queue.add('/');
+      req1 = queue.ajax('/');
       expect(runSpy.calledOnce).to.be.true;
 
-      req2 = queue.add('/');
+      req2 = queue.ajax('/');
       expect(runSpy.calledTwice).to.be.true;
       
-      req3 = queue.add('/');
+      req3 = queue.ajax('/');
       expect(runSpy.calledTwice).to.be.true;
 
       req1.always(function() {

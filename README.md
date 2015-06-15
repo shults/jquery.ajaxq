@@ -1,9 +1,9 @@
-# jquery.ajaxq
+# jquery.ajaxq - queue jquery ajax
 
 jQuery plugin for AJAX queueing.
 This extension can be used also with Zepto.js.
 
-## Usage 
+## Usage documentation
 
 ### $.ajaxq 
 
@@ -99,24 +99,24 @@ Creates new $.ajaxq.Queue instance.
 
   var 
     // firs img request will be started at once
-    img1 = imagesQueue.add({
+    img1 = imagesQueue.ajax({
       url: '/img1.png'
     }),
     // second will be started after finishing first
-    img2 = imagesQueue.add({
+    img2 = imagesQueue.ajax({
       url: '/img2.png'
     }),
 
     // the first and the second post queries will be started simultaneously
-    post1 = postsQueue.add({
+    post1 = postsQueue.ajax({
       url: '/post/1.json'
     }),
-    post2 = postsQueue.add({
+    post2 = postsQueue.ajax({
       url: '/post/2.json'
     }),
 
     // the third request fil be started after finishing one of (the first or the second)
-    post3 = postsQueue.add({
+    post3 = postsQueue.ajax({
       url: '/post/3.json'
     });
 
