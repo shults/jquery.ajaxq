@@ -26,6 +26,28 @@ var Queue = (function() {
       this._requests.push(request);
 
       return request;
+    },
+    getJSON: function ( url, data, callback ) {
+      return this.get( url, data, callback, "json" );
+    }
+  });
+
+  $.each(['get', 'post'], function(i, method) {
+    Queue.prototype[method] = function( url, data, callback, type ) {
+      // shift arguments if data argument was omitted
+      if ( $.isFunction( data ) ) {
+        type = type || callback;
+        callback = data;
+        data = undefined;
+      }
+
+      return this.ajax({
+        url: url,
+        type: method,
+        dataType: type,
+        data: data,
+        success: callback
+      });
     }
   });
 

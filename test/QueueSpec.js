@@ -73,6 +73,50 @@ describe('Queue', function () {
     });
   });
 
+  describe('#get', function() {
+    it('calls main method #ajax', function () {
+      var ajaxSpy = sinon.spy(queue, 'ajax');
+
+      queue.get('/');
+
+      expect(ajaxSpy.calledWith({
+        url: '/',
+        type: 'get',
+        dataType: undefined,
+        data: undefined,
+        success: undefined
+      })).to.be.true
+    });
+  });
+
+  describe('#post', function() {
+    it('calls main mathod #ajax', function () {
+      var ajaxSpy = sinon.spy(queue, 'ajax');
+
+      queue.post('/');
+
+      expect(ajaxSpy.calledWith({
+        url: '/',
+        type: 'post',
+        dataType: undefined,
+        data: undefined,
+        success: undefined
+      })).to.be.true
+    });
+  });
+
+  describe('#getJSON', function() {
+    it('calls #get', function () {
+      var 
+        getSpy = sinon.spy(queue, 'get'),
+        cb = function() {}; 
+
+      queue.getJSON('/', {a: 1}, cb);
+
+      expect(getSpy.calledWith('/', {a: 1}, cb, 'json')).to.be.true;
+    });
+  });
+
   describe('behavior sequence tests (for bandwidth=1)', function() {
 
     var
