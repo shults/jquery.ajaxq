@@ -153,7 +153,7 @@
     };
   
     $.extend(Queue.prototype, {
-      add: function(url, settings) {
+      ajax: function(url, settings) {
         var request = new Request(url, settings);
   
         if (this._requests.length < this._bandwidth) {
@@ -170,6 +170,28 @@
         this._requests.push(request);
   
         return request;
+      },
+      getJSON: function ( url, data, callback ) {
+        return this.get( url, data, callback, "json" );
+      }
+    });
+  
+    $.each(['get', 'post'], function(i, method) {
+      Queue.prototype[method] = function( url, data, callback, type ) {
+        // shift arguments if data argument was omitted
+        if ( $.isFunction( data ) ) {
+          type = type || callback;
+          callback = data;
+          data = undefined;
+        }
+  
+        return this.ajax({
+          url: url,
+          type: method,
+          dataType: type,
+          data: data,
+          success: callback
+        });
       }
     });
   
@@ -180,20 +202,14 @@
   var _queue = new Queue();
   
   $.ajaxq = function(url, settions) {
-    return _queue.add.apply(_queue, arguments);
+    return _queue.ajax.apply(_queue, arguments);
   };
   
-  $.ajaxq.get = function() {
-    throw "$.ajaxq.get is not implemented yet";
-  };
-  
-  $.ajaxq.post = function() {
-    throw "$.ajaxq.post is not implemented yet";
-  };
-  
-  $.ajaxq.getJSON = function() {
-    throw "$.ajaxq.getJSON is not implemented yet";
-  };
+  $.each(['get', 'post', 'getJSON'], function(i, methodName) {
+    $.ajaxq[methodName] = function() {
+      return _queue[methodName].apply(_queue, arguments);
+    }
+  });
   
   $.ajaxq.Queue = function(bandwidth) {
     return new Queue(bandwidth);
