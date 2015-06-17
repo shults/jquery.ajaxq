@@ -1,21 +1,22 @@
-# jquery.ajaxq - queue jquery ajax
+# jquery.ajaxq
 
 jQuery plugin for AJAX queueing.
 This extension can be used also with Zepto.js.
 
 ## Usage documentation
 
-### $.ajaxq 
+### $.ajaxq(url, [settings])
+  url - request url
+
+
+### $.ajaxq([settings])
+
+Method **$.ajaxq** always return $.ajaxq.Request instance.
 
 Behaves like $.ajax, but all the queries will be executed in strict sequence.
 The second request will be started only after finishing first one.
 
 ```javascript
-
-  // siagnatures 
-  // $.ajaxq(url, [settings])
-  // $.ajaxq(settings)
-  // $.ajaxq always returns $.ajaxq.Request
   
   var 
     req1 = $.ajaxq({
@@ -33,9 +34,9 @@ The second request will be started only after finishing first one.
       url: '/url3'
     });
 
-    req1.done(function() { /** do something on success */})
+    req1.done(function() { /** do something on success */ })
     req2.abort();
-    req3.faild(function() { /** do something on fail */})
+    req3.fail(function() { /** do something on fail */ })
 
 ```
 
@@ -53,19 +54,19 @@ Throws exception. Is not implemented yet.
   // Throws exception. Is not implemented yet.
 ```
 
-### $.ajaxq.getJSON
-Throws exception. Is not implemented yet.
+### $.ajaxq.getJSON( url [[,data], callback] )
+
+
+Like jQuery.getJSON 
 
 ```javascript
   // Throws exception. Is not implemented yet.
 ```
 
-### $.ajaxq.Request
+### $.ajaxq.Request(url, [settings])
+### $.ajaxq.Request(settings)
 
-Method signature (like jQuery.ajax):
-
-  - $.ajaxq.Request(url, [settings]);
-  - $.ajaxq.Request(settings);
+Method signature looks like jQuery.ajax:
 
 Creates new $.ajaxq.Request instance.
 Which has all the methods that jqXHR (promised object) has.
@@ -75,7 +76,7 @@ In addition new created object has method `run()` which starts execution of quer
 
   var req = $.ajaxq.Request({
     url: '/',
-    success: function() { /** do something */}
+    success: function() { /** do something */ }
   });
 
   console.log(req.status);
@@ -86,8 +87,9 @@ In addition new created object has method `run()` which starts execution of quer
 
 ### $.ajaxq.Queue
 
-Method signature $.ajaxq.Queue(bandwidth)
-`bandwidth` - number of concurrent runable requests.
+Method signature $.ajaxq.Queue([bandwidth])
+
+**bandwidth** - number of concurrent runable requests.
 Creates new $.ajaxq.Queue instance.
 
 ```javascript
