@@ -148,4 +148,4 @@ Creates new $.ajaxq.Queue instance.
 
 ```
 
-[Firebug Test Image](firebug_screen.png)
+![Firebug Test Image](firebug_screen.png)
