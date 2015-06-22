@@ -152,4 +152,4 @@ Results of execution above scripts.
 
 Only two ajax requrest are executing simontaneously.
 
-![Firebug Test Image](firebug_screen.png)
+![Firebug Test Image](https://raw.githubusercontent.com/shults/jquery.ajaxq/master/firebug_screen.png)
