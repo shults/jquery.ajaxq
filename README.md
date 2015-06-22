@@ -115,3 +115,37 @@ Creates new $.ajaxq.Queue instance.
     });
 
 ```
+
+### Queueing example 
+
+```javascript
+
+  var queue = new Queue(2);
+
+  for (var i = 0, n = 200; i < n; i++) {
+    var req = queue.ajax({
+      url: '/ajax.php',
+      data: {n: i}
+    });
+
+    if (i % 2) {
+      req.abort();
+    }
+  };
+
+```
+
+```php
+  // ajax.php 
+
+  usleep(rand(1000000, 3000000));
+
+  header('Content-type: application/json');
+
+  echo json_encode([
+      'status' => true
+  ]);
+
+```
+
+[Firebug Test Image](firebug_screen.png)
