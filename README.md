@@ -6,14 +6,10 @@ This extension can be used also with Zepto.js.
 ## Usage documentation
 
 ### $.ajaxq(url, [settings])
-  url - request url
 
+Method **$.ajaxq** always return $.ajaxq.Request instance what behaves like [jqXHR](http://api.jquery.com/Types/#jqXHR).
 
-### $.ajaxq([settings])
-
-Method **$.ajaxq** always return $.ajaxq.Request instance.
-
-Behaves like $.ajax, but all the queries will be executed in strict sequence.
+All queries will be executed in strict sequence.
 The second request will be started only after finishing first one.
 
 ```javascript
@@ -41,35 +37,31 @@ The second request will be started only after finishing first one.
 ```
 
 ### $.ajaxq.get
-Throws exception. Is not implemented yet.
+
+Adds request to main queue. Has the same signature as [jQuery.get](https://api.jquery.com/jquery.get/) method.
 
 ```javascript
-  // Throws exception. Is not implemented yet.
+
+  $.ajaxq.get('http://google.com', function(data) {
+    // console.log(data)
+  });
 ```
 
 ### $.ajaxq.post
-Throws exception. Is not implemented yet.
 
-```javascript
-  // Throws exception. Is not implemented yet.
-```
+Adds request to main queue. Has the same signature as [jQuery.post](https://api.jquery.com/jquery.post/) method.
 
 ### $.ajaxq.getJSON( url [[,data], callback] )
 
-
-Like jQuery.getJSON 
-
-```javascript
-  // Throws exception. Is not implemented yet.
-```
+Adds request to main queue. Has the same signature as [jQuery.getJSON](https://api.jquery.com/jquery.getJSON/) method.
 
 ### $.ajaxq.Request(url, [settings])
 ### $.ajaxq.Request(settings)
 
-Method signature looks like jQuery.ajax:
+Method signature looks like [jQuery.ajax](https://api.jquery.com/jquery.ajax/):
 
 Creates new $.ajaxq.Request instance.
-Which has all the methods that jqXHR (promised object) has.
+Which has all the methods that [jqXHR](http://api.jquery.com/Types/#jqXHR) (promised object) has.
 In addition new created object has method `run()` which starts execution of query.
 
 ```javascript
