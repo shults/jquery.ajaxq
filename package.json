@@ -1,7 +1,7 @@
 {
   "name": "jquery.ajaxq",
   "version": "0.5.0",
-  "description": "",
+  "description": "jQuery plugin for AJAX queueing. This extension can be used also with Zepto.js.",
   "main": "build/jquery.ajaxq.js",
   "devDependencies": {
     "grunt": "~0.4.5",

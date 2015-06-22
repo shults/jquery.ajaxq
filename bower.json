@@ -5,7 +5,7 @@
   "authors": [
     "Yaroslav Kotsur <yarikkotsur@gmail.com>"
   ],
-  "description": "Simple jQuery plugin for manipulation of AJAX queues",
+  "description": "jQuery plugin for AJAX queueing. This extension can be used also with Zepto.js.",
   "main": "build/jquery.ajaxq.js",
   "keywords": [
     "jquery",
