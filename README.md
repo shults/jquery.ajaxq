@@ -148,4 +148,8 @@ Creates new $.ajaxq.Queue instance.
 
 ```
 
+Results of execution above scripts.
+
+Only two ajax requrest are qxecutiong simontaneously.
+
 ![Firebug Test Image](firebug_screen.png)
