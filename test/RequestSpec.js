@@ -44,6 +44,9 @@ describe('Request', function () {
 
     it('creates new object', function() {
       expect(request).to.be.an.instanceof(Request);
+    });
+
+    it('create new object with state 1', function() {
       expect(request.readyState).to.eql(1);
     });
 
@@ -62,10 +65,16 @@ describe('Request', function () {
   });
 
   describe('#run', function () {
-    it('create _jqXHR', function () {
+    it('create _jqXHR', function (done) {
       expect(request._jqXHR).to.be.null;
+
+      request.always(function() {
+        done();
+      });
+
       request.run();
-      expect(request._jqXHR).not.to.be.null;      
+      expect(request._jqXHR).not.to.be.null;
+      server.respond();
     });
   });
 
@@ -126,20 +135,34 @@ describe('Request', function () {
     });
 
     describe('if started', function () {
+      var request;
       
       beforeEach(function () {
+        request = new Request('/done');
         request.run();
       });
 
-      it('returns not itself', function () {
+      it('returns not itself', function (done) {
+        request.fail(function() {
+          done();
+        });
+        
         expect(request.abort()).to.not.eql(request);
+        
+        server.respond();
       });
 
-      it('returns real _jqXHR object', function () {
+      it('returns real _jqXHR object', function (done) {
         expect(request.abort()).to.eql(request._jqXHR);
+        
+        request.fail(function() {
+          done();
+        });
+
+        server.respond();
       });
 
-      it('changes properties [readyState, status, statusText] of proxy object to _jqXHR', function(done) {
+      it('changes properties [readyState, status, statusText] of proxy object to _jqXHR', function (done) {
         var 
           _jqXHR = request.abort(),
           _props = ['readyState', 'status', 'statusText'];
@@ -148,12 +171,14 @@ describe('Request', function () {
           expect(request[prop]).to.equal(_jqXHR[prop]);
         });
 
-        _jqXHR.always(function() {
+        _jqXHR.fail(function() {
           $.each(_props, function(i, prop) {
             expect(request[prop]).to.equal(_jqXHR[prop]);
           });
           done();
         });
+
+        server.respond();
 
       });
 
@@ -185,14 +210,21 @@ describe('Request', function () {
       expect(request.state()).to.eql('pending');
     });
 
-    it('calls "state()" on real object and return original data if started', function () {
+    it('calls "state()" on real object and return original data if started', function (done) {
       request.run();
+
+      request.always(function() {
+        done()
+      });
 
       var callback = sinon.spy(request._jqXHR, 'state');
 
       expect(request.state()).to.eql(callback.returnValues[0]);
       expect(callback.called).to.be.true;
       expect(callback.calledOn(request._jqXHR)).to.be.true;
+
+      server.respond();
+
     });
     
   });
@@ -254,9 +286,9 @@ describe('Request', function () {
 
     describe('#pipe(then)', function () {
       
-      it('applies #done', function(done) {
+      it('applies #done', function (done) {
         request = new Request('/done')
-        request.run();
+        
         request.then(function(data) {
           expect(data).to.eql({
             error: false,
@@ -264,19 +296,22 @@ describe('Request', function () {
           });
           done();
         });
+
+        request.run();
+
         server.respond();
       });
 
-      it('applies #fail', function(done) {
+      it('applies #fail', function (done) {
         request = new Request('/fail')
-        request.run();
+        
         request.then(null, function(jqXHR) {
-          expect(jqXHR.responseJSON).to.eql({
-            error: true,
-            fail: true
-          });
+          expect(jqXHR.responseText).to.eql('{"error": true, "fail": true}');
           done();
         });
+
+        request.run();
+
         server.respond();
       });
 
@@ -313,10 +348,7 @@ describe('Request', function () {
       it('calls fail', function (done) {
         request = new Request('/fail');
         request.fail(function(jqXHR) {
-          expect(jqXHR.responseJSON).to.eql({
-            error: true,
-            fail: true
-          });
+          expect(jqXHR.responseText).to.eql('{"error": true, "fail": true}');
           done();
         });
         request.run();
@@ -326,10 +358,7 @@ describe('Request', function () {
       it('calls always', function (done) {
         request = new Request('/fail');
         request.always(function(jqXHR) {
-          expect(jqXHR.responseJSON).to.eql({
-            error: true,
-            fail: true
-          });
+          expect(jqXHR.responseText).to.eql('{"error": true, "fail": true}');
           done();
         });
         request.run();

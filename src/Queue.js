@@ -1,46 +1,74 @@
 var Queue = (function() {
 
-  function Queue(bandwidth) {
-    if (typeof bandwidth !== 'undefined' && !$.isNumeric(bandwidth)) throw "number expected";
+  var _params = {};
 
-    this._bandwidth = parseInt(bandwidth || 1, 10);
-    if (this._bandwidth < 1) throw "Bandwidth can\'t be less then 1";
-    
-    this._started = [];
-    this._queue = [];
-  };
-
-  function _runNext(request) {
+  function _runNext(queue, request) {
     var 
-      removeIndex = this._started.indexOf(request),
-      nextRequest = this._queue.shift();
+      removeIndex = _getStarted(queue).indexOf(request),
+      nextRequest = _getPending(queue).shift();
     
     if (removeIndex !== -1) {
-      this._started.splice(removeIndex, 1);  
+      _getStarted(queue).splice(removeIndex, 1);
     }
 
     if (typeof nextRequest !== 'undefined') {
-      nextRequest.always(_runNext.bind(this, nextRequest));
-      nextRequest.run();
+      nextRequest
+        .always($.proxy(_runNext, null, queue, nextRequest))
+        .run();
     }
   }
+
+  function _ajax(queue, request) {
+    if (_getStarted(queue).length < _getBandwidth(queue)) {
+      _getStarted(queue).push(request);
+      request.always($.proxy(_runNext, null, queue, request));
+      request.run();
+    } else {
+      _getPending(queue).push(request)
+    }
+  }
+
+  function _getParams(queue) {
+    return _params[queue] || (_params[queue] = {});
+  }
+
+  function _getParam(queue, name) {
+    return _getParams(queue)[name];
+  }
+
+  function _getStarted(queue) {
+    return _getParams(queue).started || (_getParams(queue).started = []);
+  }
+
+  function _getPending(queue) {
+    return _getParams(queue).pending || (_getParams(queue).pending = []);
+  }
+
+  function _setBandwidth(queue, bandwidth) {
+    if ((bandwidth = parseInt(bandwidth || 1, 10)) < 1) throw "Bandwidth can\'t be less then 1";
+    _getParams(queue).bandwidth = bandwidth;
+  }
+
+  function _getBandwidth(queue, bandwidth) {
+    return _getParams(queue).bandwidth;
+  }
+
+  function Queue(bandwidth) {
+    if (typeof bandwidth !== 'undefined' && !isNumeric(bandwidth)) throw "number expected";
+    _setBandwidth(this, bandwidth);
+  };
 
   $.extend(Queue.prototype, {
     ajax: function(url, settings) {
       var request = new Request(url, settings);
-
-      if (this._started.length < this._bandwidth) {
-        this._started.push(request);
-        request.always(_runNext.bind(this, request));
-        request.run();
-      } else {
-        this._queue.push(request);
-      }
-
+      _ajax(this, request);
       return request;
     },
     getJSON: function ( url, data, callback ) {
       return this.get( url, data, callback, "json" );
+    },
+    getBandwidth: function() {
+      return _getBandwidth(this);
     }
   });
 

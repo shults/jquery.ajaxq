@@ -6,6 +6,9 @@ var Request = (function (argument) {
     this._calls     = {};
     this._args      = [url, settings];
     this._deferred  = $.Deferred();
+    
+    this._deferred.pipe = this._deferred.then;
+
     this.readyState = 1;
   }
 
@@ -23,7 +26,19 @@ var Request = (function (argument) {
         return this._jqXHR;
       }
       // clreate new jqXHR object
-      this._jqXHR = $.ajax.apply($, this._args);
+      var 
+        url = this._args[0],
+        settings = this._args[1];
+
+      if (isObject(url)) {
+        settings = url;
+      } else {
+        settings = $.extend(true, settings || {}, {
+          url: url
+        });
+      }
+
+      this._jqXHR = $.ajax.call($, settings);
 
       this._jqXHR.done(function() {
         deferred.resolve.apply(deferred, arguments);
@@ -52,6 +67,9 @@ var Request = (function (argument) {
     // or writes to callected method to _calls and returns itself
     _call: function(methodName, args) {
       if (this._jqXHR !== null) {
+        if (typeof this._jqXHR[methodName] === 'undefined') {
+          return this._jqXHR;
+        }
         return this._jqXHR[methodName].apply(this._jqXHR, args);
       }
 
@@ -68,12 +86,14 @@ var Request = (function (argument) {
         var
           self = this, 
           _copyProperties = ['readyState', 'status', 'statusText'],
-          _return = this._jqXHR.abort.apply(this._jqXHR, arguments);
+          _return = this._jqXHR.abort.apply(this._jqXHR, arguments) || this._jqXHR;
 
-        $.each(_copyProperties, function(i, prop) {
-          self[prop] = _return[prop];
-        });
-
+        if (_return) {
+          $.each(_copyProperties, function(i, prop) {
+            self[prop] = _return[prop];
+          });
+        }
+        
         return _return;
       }
 
@@ -98,7 +118,7 @@ var Request = (function (argument) {
 
   $.each(_chainMethods, function(i, methodName) {
     proto[methodName] = function() {
-      return this._call(methodName, slice.call(arguments));
+      return this._call(methodName, slice.call(arguments)) || this._jqXHR;
     }
   });
 

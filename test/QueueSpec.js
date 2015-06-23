@@ -37,29 +37,28 @@ describe('Queue', function () {
       $.each([Infinity], function(i, value) {
         expect(function() {
           queue = new Queue(value);
-          console.log(queue);
         }).to.throw();
       });
     });
     
     it('creates queue instance with bandwidth eql 1 if not given', function() {
-      expect(queue._bandwidth).to.eql(1);
+      expect(queue.getBandwidth()).to.eql(1);
     });
 
     describe('takes a bandwidth parameter and saves it', function() {
       
       it('if int is given', function() {
         queue = new Queue(2);
-        expect(queue._bandwidth).to.eql(2);
+        expect(queue.getBandwidth()).to.eql(2);
         queue = new Queue(10);
-        expect(queue._bandwidth).to.eql(10);
+        expect(queue.getBandwidth()).to.eql(10);
       });
 
       it('if string/float is given', function() {
         queue = new Queue("2");
-        expect(queue._bandwidth).to.eql(2);
+        expect(queue.getBandwidth()).to.eql(2);
         queue = new Queue(10.1);
-        expect(queue._bandwidth).to.eql(10);
+        expect(queue.getBandwidth()).to.eql(10);
       });
 
     });
@@ -67,17 +66,25 @@ describe('Queue', function () {
   });
 
   describe('#ajax', function() {
-    it('returns Request instance object', function() {
-      expect(queue.ajax('/')).to.be.an.instanceof(Request);
+    it('returns Request instance object', function(done) {
+      var req = queue.ajax('/');
+      expect(req).to.be.an.instanceof(Request);
+
+      req.always(function() {
+        done();
+      });
+
       server.respond();
     });
   });
 
   describe('#get', function() {
-    it('calls main method #ajax', function () {
+    it('calls main method #ajax', function (done) {
       var ajaxSpy = sinon.spy(queue, 'ajax');
 
-      queue.get('/');
+      queue.get('/').always(function() {
+        done();
+      });
 
       expect(ajaxSpy.calledWith({
         url: '/',
@@ -86,14 +93,18 @@ describe('Queue', function () {
         data: undefined,
         success: undefined
       })).to.be.true
+
+      server.respond();
     });
   });
 
   describe('#post', function() {
-    it('calls main mathod #ajax', function () {
+    it('calls main mathod #ajax', function (done) {
       var ajaxSpy = sinon.spy(queue, 'ajax');
 
-      queue.post('/');
+      queue.post('/').always(function() {
+        done();
+      });
 
       expect(ajaxSpy.calledWith({
         url: '/',
@@ -102,18 +113,24 @@ describe('Queue', function () {
         data: undefined,
         success: undefined
       })).to.be.true
+
+      server.respond();
     });
   });
 
   describe('#getJSON', function() {
-    it('calls #get', function () {
+    it('calls #get', function (done) {
       var 
         getSpy = sinon.spy(queue, 'get'),
         cb = function() {}; 
 
-      queue.getJSON('/', {a: 1}, cb);
+      queue.getJSON('/', {a: 1}, cb).always(function() {
+        done();
+      });;
 
       expect(getSpy.calledWith('/', {a: 1}, cb, 'json')).to.be.true;
+
+      server.respond();
     });
   });
 
@@ -180,7 +197,7 @@ describe('Queue', function () {
 
       req3.abort();
 
-      for (var i = 0, n = 5; i < 5; i++) {
+      for (var i = 0; i < 5; i ++) {
         server.respond();
       }
 
@@ -297,7 +314,7 @@ describe('Queue', function () {
     });
 
     afterEach(function () {
-      runSpy.restore()
+      runSpy.restore();
     });
 
     it('applies run only two times', function() {
@@ -312,10 +329,13 @@ describe('Queue', function () {
         queue.ajax('/');
 
         expect(runSpy.calledTwice).to.be.true;
-        expect(runSpy.calledThrice).to.be.false;
+
+        server.respond();
+        server.respond();
+        server.respond();
     });
 
-    it('applies run three times if got response on first or second', function(done) {
+    it('applies run three times if got response on first or second', function (done) {
       var req1, req2, req3;
 
       req1 = queue.ajax('/');
@@ -323,7 +343,7 @@ describe('Queue', function () {
 
       req2 = queue.ajax('/');
       expect(runSpy.calledTwice).to.be.true;
-      
+
       req3 = queue.ajax('/');
       expect(runSpy.calledTwice).to.be.true;
 
@@ -331,14 +351,14 @@ describe('Queue', function () {
         expect(runSpy.callCount).to.eql(3);
       });
 
-      req2.always(function() {
-        expect(runSpy.callCount).to.eql(4);
+      req3.always(function() {
+        expect(runSpy.callCount).to.eql(3);
         done();
       });
 
       server.respond();
       server.respond();
-      
+      server.respond();
     });
 
   });
