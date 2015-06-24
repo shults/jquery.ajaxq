@@ -5,14 +5,16 @@
   "authors": [
     "Yaroslav Kotsur <yarikkotsur@gmail.com>"
   ],
-  "description": "jQuery plugin for AJAX queueing. This extension can be used also with Zepto.js.",
+  "description": "jQuery plugin for AJAX queueing. This plugin can be used also with Zepto.js.",
   "main": "build/jquery.ajaxq.js",
   "keywords": [
     "jquery",
     "ajax",
     "queue",
     "zepto",
-    "jqXHR"
+    "jqXHR",
+    "ajaxq",
+    "promise"
   ],
   "devDependencies": {
     "jquery": "~1.11.3",
@@ -27,7 +29,6 @@
     "**/.*",
     "node_modules",
     "bower_components",
-    "test",
-    "tests"
+    "test"
   ]
 }

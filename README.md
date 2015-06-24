@@ -1,7 +1,10 @@
 # jquery.ajaxq
 
 jQuery plugin for AJAX queueing.
+
 This extension can be used also with Zepto.js.
+
+Get the [latest version on GitHub](https://github.com/shults/jquery.ajaxq)
 
 ## Download 
 Download [jquery.ajaxq.js](https://raw.githubusercontent.com/shults/jquery.ajaxq/master/build/jquery.ajaxq.js) or minified [jquery.ajaxq.min.js](https://raw.githubusercontent.com/shults/jquery.ajaxq/master/build/jquery.ajaxq.min.js)
