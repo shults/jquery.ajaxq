@@ -1,6 +1,6 @@
 {
   "name": "jquery.ajaxq",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "jQuery plugin for AJAX queueing. This plugin can be used also with Zepto.js.",
   "main": "build/jquery.ajaxq.js",
   "repository": {
@@ -29,7 +29,6 @@
     "grunt-preprocess": "4.0.0",
     "grunt-contrib-jst": "~0.6.0",
     "grunt-contrib-watch": "~0.6.0",
-
     "jquery": "~1.11.3",
     "mocha": "~2.2.0",
     "chai": "~2.3.0",

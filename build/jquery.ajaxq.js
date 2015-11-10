@@ -181,13 +181,13 @@
   })()
   var Queue = (function() {
   
-    var _params = {};
+    var _params = {}, _queueCounter = 0;
   
     function _runNext(queue, request) {
-      var 
+      var
         removeIndex = _getStarted(queue).indexOf(request),
         nextRequest = _getPending(queue).shift();
-      
+  
       if (removeIndex !== -1) {
         _getStarted(queue).splice(removeIndex, 1);
       }
@@ -210,7 +210,7 @@
     }
   
     function _getParams(queue) {
-      return _params[queue] || (_params[queue] = {});
+      return _params[queue.id] || (_params[queue.id] = {});
     }
   
     function _getParam(queue, name) {
@@ -236,6 +236,7 @@
   
     function Queue(bandwidth) {
       if (typeof bandwidth !== 'undefined' && !isNumeric(bandwidth)) throw "number expected";
+      this.id = ++_queueCounter;
       _setBandwidth(this, bandwidth);
     };
   
@@ -274,6 +275,7 @@
   
     return Queue;
   })();
+  
   if (typeof $.ajaxq !== 'undefined') throw "Namespace $.ajaxq is Alread y busy.";
   
   var _queue = new Queue();
